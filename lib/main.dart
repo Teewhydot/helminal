@@ -67,31 +67,34 @@ class _MyHomePageState extends State<MyHomePage> {
         title: const Text('Terminal game assistant'),
       ),
       body: Center(
-        child: ListView(
-          children: <Widget>[
-            CustomTextfield(
-                textController: firstChoiceController,
-                hintText: 'Enter the first choice'),
-            CustomNumberTextfield(
-                textController: noOfMatchesController,
-                hintText: 'No of matching letters '),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              CustomTextfield(
+                  textController: firstChoiceController,
+                  hintText: 'Enter the first choice'),
+              CustomNumberTextfield(
+                  textController: noOfMatchesController,
+                  hintText: 'No of matching letters '),
 
-            const Text(
-                'Enter the other words shown on the game below apart from the first choice'),
-            CustomTextfield(
-                textController: firstWordController, hintText: 'First Word'),
-            CustomTextfield(
-                textController: secondWordController, hintText: 'Second Word'),
-            CustomTextfield(
-                textController: thirdWordController, hintText: 'Third Word'),
-            CustomTextfield(
-                textController: fourthWordController, hintText: 'Fourth Word'),
-            CustomTextfield(
-                textController: fifthWordController, hintText: 'Fifth Word'),
-            CustomTextfield(
-                textController: sixthWordController, hintText: 'Sixth Word'),
-            // ElevatedButton(onPressed: (){}, child: const Text('Predict the word')),
-          ],
+              const Text(
+                  'Enter the other words shown on the game below apart from the first choice'),
+              CustomTextfield(
+                  textController: firstWordController, hintText: 'First Word'),
+              CustomTextfield(
+                  textController: secondWordController, hintText: 'Second Word'),
+              CustomTextfield(
+                  textController: thirdWordController, hintText: 'Third Word'),
+              CustomTextfield(
+                  textController: fourthWordController, hintText: 'Fourth Word'),
+              CustomTextfield(
+                  textController: fifthWordController, hintText: 'Fifth Word'),
+              CustomTextfield(
+                  textController: sixthWordController, hintText: 'Sixth Word'),
+              // ElevatedButton(onPressed: (){}, child: const Text('Predict the word')),
+            ],
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
