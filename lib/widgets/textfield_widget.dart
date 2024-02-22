@@ -20,15 +20,10 @@ class CustomTextfield extends StatelessWidget {
         height: 70,
         decoration:
         const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(20))),
-        child: TextFormField(
-          autovalidateMode: AutovalidateMode.onUserInteraction,
+        child: TextField(
           controller: _textController,
-          cursorColor: Colors.black,
           keyboardType: TextInputType.name,
-          onChanged: (newValue) {},
           decoration: InputDecoration(
-            filled: true,
-            focusColor: Colors.white,
             focusedBorder: OutlineInputBorder(
               borderSide: const BorderSide(
                   width: 3, style: BorderStyle.solid),
@@ -70,15 +65,10 @@ class CustomNumberTextfield extends StatelessWidget {
         height: 70,
         decoration:
         const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(20))),
-        child: TextFormField(
-          autovalidateMode: AutovalidateMode.onUserInteraction,
+        child: TextField(
           controller: _textController,
-          cursorColor: Colors.black,
           keyboardType: TextInputType.number,
-          onChanged: (newValue) {},
           decoration: InputDecoration(
-            filled: true,
-            focusColor: Colors.white,
             focusedBorder: OutlineInputBorder(
               borderSide: const BorderSide(
                   width: 3, style: BorderStyle.solid),
@@ -92,7 +82,7 @@ class CustomNumberTextfield extends StatelessWidget {
             ),
             hintText: hintText,
             contentPadding:
-            const EdgeInsets.symmetric(vertical: 5.0, horizontal: 20.0),
+            const EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
           ),
         ),
       ),

@@ -3,7 +3,6 @@ int countMatchingLetters(String str1, String str2) {
   int matches = 0;
 
   if (str1.length != str2.length) {
-    print('Lengths of the strings are not equal');
   } else {
     // Initialize a variable to store the number of matching letters
 
