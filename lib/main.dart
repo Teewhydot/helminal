@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:helminal/engine/prediction_engine.dart';
-import 'package:helminal/widgets/row_option_widget.dart';
 import 'package:helminal/widgets/textfield_widget.dart';
 
 void main() {
@@ -43,12 +42,15 @@ class _MyHomePageState extends State<MyHomePage> {
   final TextEditingController fifthWordController = TextEditingController();
   final TextEditingController sixthWordController = TextEditingController();
   final TextEditingController seventhWordController = TextEditingController();
+  final TextEditingController eighthWordController = TextEditingController();
+  final TextEditingController ninthWordController = TextEditingController();
+  final TextEditingController tenthWordController = TextEditingController();
 
   final TextEditingController noOfMatchesControllerFirstChoice =
       TextEditingController();
   final TextEditingController noOfMatchesControllerSecondChoice =
       TextEditingController();
-  int wordLength = 0;
+  int wordLength = 1;
   int noOfMatchesFirstWordFirstGuess = 0;
   int noOfMatchesSecondWordFirstGuess = 0;
   int noOfMatchesThirdWordFirstGuess = 0;
@@ -56,6 +58,10 @@ class _MyHomePageState extends State<MyHomePage> {
   int noOfMatchesFifthWordFirstGuess = 0;
   int noOfMatchesSixthWordFirstGuess = 0;
   int noOfMatchesSeventhWordFirstGuess = 0;
+  int noOfMatchesEighthWordFirstGuess = 0;
+  int noOfMatchesNinthWordFirstGuess = 0;
+  int noOfMatchesTenthWordFirstGuess = 0;
+
   int noOfMatchesFirstWordSecondGuess = 0;
   int noOfMatchesSecondWordSecondGuess = 0;
   int noOfMatchesThirdWordSecondGuess = 0;
@@ -63,11 +69,13 @@ class _MyHomePageState extends State<MyHomePage> {
   int noOfMatchesFifthWordSecondGuess = 0;
   int noOfMatchesSixthWordSecondGuess = 0;
   int noOfMatchesSeventhWordSecondGuess = 0;
+  int noOfMatchesEighthWordSecondGuess = 0;
+  int noOfMatchesNinthWordSecondGuess = 0;
+  int noOfMatchesTenthWordSecondGuess = 0;
 
-  List<bool> isActive = [false, true];
   bool failedSecondAttempt = false;
-  final Color activeColor = Colors.lightGreen;
-  final Color inactiveColor = Colors.grey;
+  bool needNinthWord = false;
+  bool needTenthWord = false;
   @override
   void dispose() {
     // TODO: implement dispose
@@ -81,6 +89,9 @@ class _MyHomePageState extends State<MyHomePage> {
     fifthWordController.dispose();
     sixthWordController.dispose();
     seventhWordController.dispose();
+    eighthWordController.dispose();
+    ninthWordController.dispose();
+    tenthWordController.dispose();
     wordLengthController.dispose();
     noOfMatchesControllerFirstChoice.dispose();
     noOfMatchesControllerSecondChoice.dispose();
@@ -97,46 +108,13 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              ToggleButtons(
-                fillColor: Colors.transparent,
-                onPressed: (int newIndex) {
-                  setState(() {
-                    for (int index = 0; index < isActive.length; index++) {
-                      if (index == newIndex) {
-                        isActive[index] = true;
-                      } else {
-                        isActive[index] = false;
-                      }
-                    }
-                  });
-                },
-                isSelected: isActive,
-                children: [
-                  RowOption(
-                    text: const Text(
-                      '7 words',
-                      style: TextStyle(
-                        color: Colors.white,
-                      ),
-                    ),
-                    color: isActive[0] == true ? activeColor : inactiveColor,
-                  ),
-                  RowOption(
-                    text: const Text(
-                      '8 words',
-                      style: TextStyle(
-                        color: Colors.white,
-                      ),
-                    ),
-                    color: isActive[1] == true ? activeColor : inactiveColor,
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 20,
-              ),
               CustomNumberTextfield(
                   textController: wordLengthController,
+                  unChanged: (value) {
+                    setState(() {
+                      wordLength = int.parse(value);
+                    });
+                  },
                   hintText: 'Word length '),
               ElevatedButton(
                 onPressed: () {
@@ -149,10 +127,13 @@ class _MyHomePageState extends State<MyHomePage> {
                   fifthWordController.clear();
                   sixthWordController.clear();
                   seventhWordController.clear();
+                  eighthWordController.clear();
+                  ninthWordController.clear();
+                  tenthWordController.clear();
                   noOfMatchesControllerFirstChoice.clear();
                   noOfMatchesControllerSecondChoice.clear();
+                  wordLengthController.clear();
                   setState(() {
-                    isActive = [false, true];
                     failedSecondAttempt = false;
                   });
                 },
@@ -160,8 +141,10 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               CustomTextfield(
                   textController: firstChoiceController,
+                  maxLength: wordLength,
                   hintText: 'Enter the first guess'),
               CustomNumberTextfield(
+                  unChanged: () {},
                   textController: noOfMatchesControllerFirstChoice,
                   hintText: 'No of matching letters '),
               Padding(
@@ -189,8 +172,10 @@ class _MyHomePageState extends State<MyHomePage> {
                   children: [
                     CustomTextfield(
                         textController: secondChoiceController,
+                        maxLength: wordLength,
                         hintText: 'Enter the second guess'),
                     CustomNumberTextfield(
+                        unChanged: () {},
                         textController: noOfMatchesControllerSecondChoice,
                         hintText: 'No of matching letters '),
                   ],
@@ -199,48 +184,95 @@ class _MyHomePageState extends State<MyHomePage> {
               const Text(
                   'Enter the other words shown on the game below apart from the first choice'),
               CustomTextfield(
-                  textController: firstWordController, hintText: 'First Word'),
+                  textController: firstWordController,
+                  maxLength: wordLength,
+                  hintText: 'First Word'),
               CustomTextfield(
                   textController: secondWordController,
+                  maxLength: wordLength,
                   hintText: 'Second Word'),
               CustomTextfield(
-                  textController: thirdWordController, hintText: 'Third Word'),
+                  maxLength: wordLength,
+                  textController: thirdWordController,
+                  hintText: 'Third Word'),
               CustomTextfield(
                   textController: fourthWordController,
+                  maxLength: wordLength,
                   hintText: 'Fourth Word'),
               CustomTextfield(
-                  textController: fifthWordController, hintText: 'Fifth Word'),
+                  textController: fifthWordController,
+                  maxLength: wordLength,
+                  hintText: 'Fifth Word'),
               CustomTextfield(
-                  textController: sixthWordController, hintText: 'Sixth Word'),
-              isActive[1] == true
-                  ? CustomTextfield(
-                      textController: seventhWordController,
-                      hintText: 'Seventh Word')
-                  : const SizedBox(),
+                  textController: sixthWordController,
+                  maxLength: wordLength,
+                  hintText: 'Sixth Word'),
+              CustomTextfield(
+                  textController: seventhWordController,
+                  maxLength: wordLength,
+                  hintText: 'Seventh Word'),
+              CustomTextfield(
+                  textController: eighthWordController,
+                  maxLength: wordLength,
+                  hintText: 'Eighth Word'),
+              TextButton(
+                  onPressed: () {
+                    setState(() {
+                      needNinthWord = !needNinthWord;
+                    });
+                  },
+                  child: needNinthWord
+                      ? const Text('Remove ninth word')
+                      : const Text('Need ninth word')),
+              Visibility(
+                visible: needNinthWord,
+                child: CustomTextfield(
+                    textController: ninthWordController,
+                    maxLength: wordLength,
+                    hintText: 'Ninth Word'),
+              ),
+              TextButton(
+                  onPressed: () {
+                    setState(() {
+                      needTenthWord = !needTenthWord;
+                    });
+                  },
+                  child: needTenthWord
+                      ? const Text('Remove tenth word')
+                      : const Text('Need tenth word')),
+              Visibility(
+                visible: needTenthWord,
+                child: CustomTextfield(
+                    textController: tenthWordController,
+                    maxLength: wordLength,
+                    hintText: 'Tenth Word'),
+              ),
+              const SizedBox(
+                height: 50,
+              )
             ],
           ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          wordLength = int.parse(wordLengthController.text);
-          if (firstChoiceController.text.length == wordLength &&
-              firstWordController.text.length == wordLength &&
-              secondWordController.text.length == wordLength &&
-              thirdWordController.text.length == wordLength &&
-              fourthWordController.text.length == wordLength &&
-              fifthWordController.text.length == wordLength &&
-              sixthWordController.text.length == wordLength &&
-              (isActive[1] == true
-                  ? seventhWordController.text.length == wordLength
-                  : true) &&
-              noOfMatchesControllerFirstChoice.text.isNotEmpty &&
-              (failedSecondAttempt == true
-                  ? noOfMatchesControllerSecondChoice.text.isNotEmpty
-                  : true) &&
-              (failedSecondAttempt == true
-                  ? secondChoiceController.text.length == wordLength
-                  : true)) {
+          if (noOfMatchesControllerFirstChoice.text.isEmpty ||
+              firstChoiceController.text.isEmpty ||
+              firstWordController.text.isEmpty ||
+              secondWordController.text.isEmpty ||
+              thirdWordController.text.isEmpty ||
+              fourthWordController.text.isEmpty ||
+              fifthWordController.text.isEmpty ||
+              sixthWordController.text.isEmpty
+            ) {
+            // show a snack bar saying all fields are required
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Please fill all the fields'),
+                duration: Duration(seconds: 1),
+              ),
+            );
+          } else {
             noOfMatchesFirstWordFirstGuess = countMatchingLetters(
                 firstChoiceController.text, firstWordController.text);
             noOfMatchesSecondWordFirstGuess = countMatchingLetters(
@@ -253,10 +285,15 @@ class _MyHomePageState extends State<MyHomePage> {
                 firstChoiceController.text, fifthWordController.text);
             noOfMatchesSixthWordFirstGuess = countMatchingLetters(
                 firstChoiceController.text, sixthWordController.text);
-            if (isActive[1] == true) {
-              noOfMatchesSeventhWordFirstGuess = countMatchingLetters(
-                  firstChoiceController.text, seventhWordController.text);
-            }
+            noOfMatchesSeventhWordFirstGuess = countMatchingLetters(
+                firstChoiceController.text, seventhWordController.text);
+            noOfMatchesEighthWordFirstGuess = countMatchingLetters(
+                firstChoiceController.text, eighthWordController.text);
+            noOfMatchesNinthWordFirstGuess = countMatchingLetters(
+                firstChoiceController.text, ninthWordController.text);
+            noOfMatchesTenthWordFirstGuess = countMatchingLetters(
+                firstChoiceController.text, tenthWordController.text);
+
             if (failedSecondAttempt == true) {
               noOfMatchesFirstWordSecondGuess = countMatchingLetters(
                   secondChoiceController.text, firstWordController.text);
@@ -270,10 +307,14 @@ class _MyHomePageState extends State<MyHomePage> {
                   secondChoiceController.text, fifthWordController.text);
               noOfMatchesSixthWordSecondGuess = countMatchingLetters(
                   secondChoiceController.text, sixthWordController.text);
-              if (isActive[1] == true) {
-                noOfMatchesSeventhWordSecondGuess = countMatchingLetters(
-                    secondChoiceController.text, seventhWordController.text);
-              }
+              noOfMatchesSeventhWordSecondGuess = countMatchingLetters(
+                  secondChoiceController.text, seventhWordController.text);
+              noOfMatchesEighthWordSecondGuess = countMatchingLetters(
+                  secondChoiceController.text, eighthWordController.text);
+              noOfMatchesNinthWordSecondGuess = countMatchingLetters(
+                  secondChoiceController.text, ninthWordController.text);
+              noOfMatchesTenthWordSecondGuess = countMatchingLetters(
+                  secondChoiceController.text, tenthWordController.text);
             }
             showModalBottomSheet(
               context: context,
@@ -285,82 +326,203 @@ class _MyHomePageState extends State<MyHomePage> {
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Column(
-                          children: [
-                            const Text('Results',
-                                style: TextStyle(
-                                    fontSize: 20, fontWeight: FontWeight.bold)),
-                            const SizedBox(height: 20),
-                            Text(
-                              firstWordController.text,
-                              style: TextStyle(
-                                  fontSize: 15,
-                                  color: noOfMatchesFirstWordFirstGuess ==
-                                          int.parse(
-                                              noOfMatchesControllerFirstChoice
-                                                  .text)
-                                      ? Colors.green
-                                      : Colors.red),
-                            ),
-                            Text(
-                              secondWordController.text,
-                              style: TextStyle(
-                                  fontSize: 15,
-                                  color: noOfMatchesSecondWordFirstGuess ==
-                                          int.parse(
-                                              noOfMatchesControllerFirstChoice
-                                                  .text)
-                                      ? Colors.green
-                                      : Colors.red),
-                            ),
-                            Text(
-                              thirdWordController.text,
-                              style: TextStyle(
-                                  fontSize: 15,
-                                  color: noOfMatchesThirdWordFirstGuess ==
-                                          int.parse(
-                                              noOfMatchesControllerFirstChoice
-                                                  .text)
-                                      ? Colors.green
-                                      : Colors.red),
-                            ),
-                            Text(
-                              fourthWordController.text,
-                              style: TextStyle(
-                                  fontSize: 15,
-                                  color: noOfMatchesFourthWordFirstGuess ==
-                                          int.parse(
-                                              noOfMatchesControllerFirstChoice
-                                                  .text)
-                                      ? Colors.green
-                                      : Colors.red),
-                            ),
-                            Text(
-                              fifthWordController.text,
-                              style: TextStyle(
-                                  fontSize: 15,
-                                  color: noOfMatchesFifthWordFirstGuess ==
-                                          int.parse(
-                                              noOfMatchesControllerFirstChoice
-                                                  .text)
-                                      ? Colors.green
-                                      : Colors.red),
-                            ),
-                            Text(
-                              sixthWordController.text,
-                              style: TextStyle(
-                                  fontSize: 15,
-                                  color: noOfMatchesSixthWordFirstGuess ==
-                                          int.parse(
-                                              noOfMatchesControllerFirstChoice
-                                                  .text)
-                                      ? Colors.green
-                                      : Colors.red),
-                            ),
-                            isActive[1] == true
-                                ? Text(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        const Text('Results',
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.bold)),
+                        Table(
+                            border: TableBorder.all(),
+                            defaultVerticalAlignment:
+                                TableCellVerticalAlignment.middle,
+                            children: [
+                              const TableRow(children: [
+                                TableCell(child: Text('First attempt')),
+                                TableCell(child: Text('Second attempt')),
+                              ]),
+                              TableRow(children: [
+                                TableCell(
+                                  child: Text(
+                                    firstWordController.text,
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        color: noOfMatchesFirstWordFirstGuess ==
+                                                int.parse(
+                                                    noOfMatchesControllerFirstChoice
+                                                        .text)
+                                            ? Colors.green
+                                            : Colors.red),
+                                  ),
+                                ),
+                                TableCell(
+                                  child: failedSecondAttempt == true
+                                      ? Text(
+                                          firstWordController.text,
+                                          style: TextStyle(
+                                              fontSize: 15,
+                                              color: noOfMatchesFirstWordSecondGuess ==
+                                                      int.parse(
+                                                          noOfMatchesControllerSecondChoice
+                                                              .text)
+                                                  ? Colors.green
+                                                  : Colors.red),
+                                        )
+                                      : const SizedBox(),
+                                ),
+                              ]),
+                              TableRow(children: [
+                                TableCell(
+                                  child: Text(
+                                    secondWordController.text,
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        color: noOfMatchesSecondWordFirstGuess ==
+                                                int.parse(
+                                                    noOfMatchesControllerFirstChoice
+                                                        .text)
+                                            ? Colors.green
+                                            : Colors.red),
+                                  ),
+                                ),
+                                TableCell(
+                                  child: failedSecondAttempt == true
+                                      ? Text(
+                                          secondWordController.text,
+                                          style: TextStyle(
+                                              fontSize: 15,
+                                              color: noOfMatchesSecondWordSecondGuess ==
+                                                      int.parse(
+                                                          noOfMatchesControllerSecondChoice
+                                                              .text)
+                                                  ? Colors.green
+                                                  : Colors.red),
+                                        )
+                                      : const SizedBox(),
+                                ),
+                              ]),
+                              TableRow(children: [
+                                TableCell(
+                                  child: Text(
+                                    thirdWordController.text,
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        color: noOfMatchesThirdWordFirstGuess ==
+                                                int.parse(
+                                                    noOfMatchesControllerFirstChoice
+                                                        .text)
+                                            ? Colors.green
+                                            : Colors.red),
+                                  ),
+                                ),
+                                TableCell(
+                                  child: failedSecondAttempt == true
+                                      ? Text(
+                                          thirdWordController.text,
+                                          style: TextStyle(
+                                              fontSize: 15,
+                                              color: noOfMatchesThirdWordSecondGuess ==
+                                                      int.parse(
+                                                          noOfMatchesControllerSecondChoice
+                                                              .text)
+                                                  ? Colors.green
+                                                  : Colors.red),
+                                        )
+                                      : const SizedBox(),
+                                ),
+                              ]),
+                              TableRow(children: [
+                                TableCell(
+                                  child: Text(
+                                    fourthWordController.text,
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        color: noOfMatchesFourthWordFirstGuess ==
+                                                int.parse(
+                                                    noOfMatchesControllerFirstChoice
+                                                        .text)
+                                            ? Colors.green
+                                            : Colors.red),
+                                  ),
+                                ),
+                                TableCell(
+                                  child: failedSecondAttempt == true
+                                      ? Text(
+                                          fourthWordController.text,
+                                          style: TextStyle(
+                                              fontSize: 15,
+                                              color: noOfMatchesFourthWordSecondGuess ==
+                                                      int.parse(
+                                                          noOfMatchesControllerSecondChoice
+                                                              .text)
+                                                  ? Colors.green
+                                                  : Colors.red),
+                                        )
+                                      : const SizedBox(),
+                                ),
+                              ]),
+                              TableRow(children: [
+                                TableCell(
+                                  child: Text(
+                                    fifthWordController.text,
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        color: noOfMatchesFifthWordFirstGuess ==
+                                                int.parse(
+                                                    noOfMatchesControllerFirstChoice
+                                                        .text)
+                                            ? Colors.green
+                                            : Colors.red),
+                                  ),
+                                ),
+                                TableCell(
+                                  child: failedSecondAttempt == true
+                                      ? Text(
+                                          fifthWordController.text,
+                                          style: TextStyle(
+                                              fontSize: 15,
+                                              color: noOfMatchesFifthWordSecondGuess ==
+                                                      int.parse(
+                                                          noOfMatchesControllerSecondChoice
+                                                              .text)
+                                                  ? Colors.green
+                                                  : Colors.red),
+                                        )
+                                      : const SizedBox(),
+                                ),
+                              ]),
+                              TableRow(children: [
+                                TableCell(
+                                  child: Text(
+                                    sixthWordController.text,
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        color: noOfMatchesSixthWordFirstGuess ==
+                                                int.parse(
+                                                    noOfMatchesControllerFirstChoice
+                                                        .text)
+                                            ? Colors.green
+                                            : Colors.red),
+                                  ),
+                                ),
+                                TableCell(
+                                  child: failedSecondAttempt == true
+                                      ? Text(
+                                          sixthWordController.text,
+                                          style: TextStyle(
+                                              fontSize: 15,
+                                              color: noOfMatchesSixthWordSecondGuess ==
+                                                      int.parse(
+                                                          noOfMatchesControllerSecondChoice
+                                                              .text)
+                                                  ? Colors.green
+                                                  : Colors.red),
+                                        )
+                                      : const SizedBox(),
+                                ),
+                              ]),
+                              TableRow(children: [
+                                TableCell(
+                                  child: Text(
                                     seventhWordController.text,
                                     style: TextStyle(
                                         fontSize: 15,
@@ -370,85 +532,10 @@ class _MyHomePageState extends State<MyHomePage> {
                                                         .text)
                                             ? Colors.green
                                             : Colors.red),
-                                  )
-                                : const SizedBox(),
-                          ],
-                        ),
-                        failedSecondAttempt == true
-                            ? Column(
-                                children: [
-                                  const Text('Results second attempt',
-                                      style: TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold)),
-                                  const SizedBox(height: 20),
-                                  Text(
-                                    firstWordController.text,
-                                    style: TextStyle(
-                                        fontSize: 15,
-                                        color: noOfMatchesFirstWordSecondGuess ==
-                                                int.parse(
-                                                    noOfMatchesControllerSecondChoice
-                                                        .text)
-                                            ? Colors.green
-                                            : Colors.red),
                                   ),
-                                  Text(
-                                    secondWordController.text,
-                                    style: TextStyle(
-                                        fontSize: 15,
-                                        color: noOfMatchesSecondWordSecondGuess ==
-                                                int.parse(
-                                                    noOfMatchesControllerSecondChoice
-                                                        .text)
-                                            ? Colors.green
-                                            : Colors.red),
-                                  ),
-                                  Text(
-                                    thirdWordController.text,
-                                    style: TextStyle(
-                                        fontSize: 15,
-                                        color: noOfMatchesThirdWordSecondGuess ==
-                                                int.parse(
-                                                    noOfMatchesControllerSecondChoice
-                                                        .text)
-                                            ? Colors.green
-                                            : Colors.red),
-                                  ),
-                                  Text(
-                                    fourthWordController.text,
-                                    style: TextStyle(
-                                        fontSize: 15,
-                                        color: noOfMatchesFourthWordSecondGuess ==
-                                                int.parse(
-                                                    noOfMatchesControllerSecondChoice
-                                                        .text)
-                                            ? Colors.green
-                                            : Colors.red),
-                                  ),
-                                  Text(
-                                    fifthWordController.text,
-                                    style: TextStyle(
-                                        fontSize: 15,
-                                        color: noOfMatchesFifthWordSecondGuess ==
-                                                int.parse(
-                                                    noOfMatchesControllerSecondChoice
-                                                        .text)
-                                            ? Colors.green
-                                            : Colors.red),
-                                  ),
-                                  Text(
-                                    sixthWordController.text,
-                                    style: TextStyle(
-                                        fontSize: 15,
-                                        color: noOfMatchesSixthWordSecondGuess ==
-                                                int.parse(
-                                                    noOfMatchesControllerSecondChoice
-                                                        .text)
-                                            ? Colors.green
-                                            : Colors.red),
-                                  ),
-                                  isActive[1] == true
+                                ),
+                                TableCell(
+                                  child: failedSecondAttempt == true
                                       ? Text(
                                           seventhWordController.text,
                                           style: TextStyle(
@@ -461,9 +548,99 @@ class _MyHomePageState extends State<MyHomePage> {
                                                   : Colors.red),
                                         )
                                       : const SizedBox(),
-                                ],
-                              )
-                            : const SizedBox(),
+                                ),
+                              ]),
+                              TableRow(children: [
+                                TableCell(
+                                  child: Text(
+                                    eighthWordController.text,
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        color: noOfMatchesEighthWordFirstGuess ==
+                                                int.parse(
+                                                    noOfMatchesControllerFirstChoice
+                                                        .text)
+                                            ? Colors.green
+                                            : Colors.red),
+                                  ),
+                                ),
+                                TableCell(
+                                  child: failedSecondAttempt == true
+                                      ? Text(
+                                          eighthWordController.text,
+                                          style: TextStyle(
+                                              fontSize: 15,
+                                              color: noOfMatchesEighthWordSecondGuess ==
+                                                      int.parse(
+                                                          noOfMatchesControllerSecondChoice
+                                                              .text)
+                                                  ? Colors.green
+                                                  : Colors.red),
+                                        )
+                                      : const SizedBox(),
+                                ),
+                              ]),
+                              TableRow(children: [
+                                TableCell(
+                                  child: Text(
+                                    ninthWordController.text,
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        color: noOfMatchesNinthWordFirstGuess ==
+                                                int.parse(
+                                                    noOfMatchesControllerFirstChoice
+                                                        .text)
+                                            ? Colors.green
+                                            : Colors.red),
+                                  ),
+                                ),
+                                TableCell(
+                                  child: failedSecondAttempt == true
+                                      ? Text(
+                                          ninthWordController.text,
+                                          style: TextStyle(
+                                              fontSize: 15,
+                                              color: noOfMatchesNinthWordSecondGuess ==
+                                                      int.parse(
+                                                          noOfMatchesControllerSecondChoice
+                                                              .text)
+                                                  ? Colors.green
+                                                  : Colors.red),
+                                        )
+                                      : const SizedBox(),
+                                ),
+                              ]),
+                              TableRow(children: [
+                                TableCell(
+                                  child: Text(
+                                    tenthWordController.text,
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        color: noOfMatchesTenthWordFirstGuess ==
+                                                int.parse(
+                                                    noOfMatchesControllerFirstChoice
+                                                        .text)
+                                            ? Colors.green
+                                            : Colors.red),
+                                  ),
+                                ),
+                                TableCell(
+                                  child: failedSecondAttempt == true
+                                      ? Text(
+                                          tenthWordController.text,
+                                          style: TextStyle(
+                                              fontSize: 15,
+                                              color: noOfMatchesTenthWordSecondGuess ==
+                                                      int.parse(
+                                                          noOfMatchesControllerSecondChoice
+                                                              .text)
+                                                  ? Colors.green
+                                                  : Colors.red),
+                                        )
+                                      : const SizedBox(),
+                                ),
+                              ]),
+                            ]),
                         ElevatedButton(
                           onPressed: () {
                             Navigator.of(context).pop();
@@ -475,14 +652,6 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 );
               },
-            );
-          } else {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                duration: Duration(seconds: 1),
-                content:
-                    Text('Please check that all fields are of equal length'),
-              ),
             );
           }
         },

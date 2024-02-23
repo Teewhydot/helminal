@@ -14,7 +14,7 @@ int countMatchingLetters(String str1, String str2) {
         matches++;
       }
     }
-    print(matches);
+
     // Return the number of matching letters
   }
   return matches;

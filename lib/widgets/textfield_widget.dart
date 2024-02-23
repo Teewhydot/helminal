@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:helminal/validators.dart';
 
 
 class CustomTextfield extends StatelessWidget {
@@ -6,10 +7,12 @@ class CustomTextfield extends StatelessWidget {
     super.key,
     required TextEditingController textController,
     required this.hintText,
+    required this.maxLength,
   }) : _textController = textController;
 
   final TextEditingController _textController;
   final String hintText;
+  final int maxLength;
 
   @override
   Widget build(BuildContext context) {
@@ -20,8 +23,11 @@ class CustomTextfield extends StatelessWidget {
         height: 70,
         decoration:
         const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(20))),
-        child: TextField(
+        child: TextFormField(
+          autovalidateMode: AutovalidateMode.onUserInteraction,
           controller: _textController,
+          validator: lengthValidator,
+          maxLength: maxLength,
           keyboardType: TextInputType.name,
           decoration: InputDecoration(
             focusedBorder: OutlineInputBorder(
@@ -51,10 +57,12 @@ class CustomNumberTextfield extends StatelessWidget {
     super.key,
     required TextEditingController textController,
     required this.hintText,
+    required this.unChanged,
   }) : _textController = textController;
 
   final TextEditingController _textController;
   final String hintText;
+  final Function unChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -66,6 +74,9 @@ class CustomNumberTextfield extends StatelessWidget {
         decoration:
         const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(20))),
         child: TextField(
+          onChanged: (value) {
+            unChanged(value);
+          },
           controller: _textController,
           keyboardType: TextInputType.number,
           decoration: InputDecoration(
