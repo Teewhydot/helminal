@@ -42,6 +42,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final TextEditingController wordLengthController = TextEditingController();
   final TextEditingController firstChoiceController = TextEditingController();
   final TextEditingController secondChoiceController = TextEditingController();
+  final TextEditingController thirdChoiceController = TextEditingController();
   final TextEditingController firstWordController = TextEditingController();
   final TextEditingController secondWordController = TextEditingController();
   final TextEditingController thirdWordController = TextEditingController();
@@ -56,6 +57,8 @@ class _MyHomePageState extends State<MyHomePage> {
   final TextEditingController noOfMatchesControllerFirstChoice =
       TextEditingController();
   final TextEditingController noOfMatchesControllerSecondChoice =
+      TextEditingController();
+  final TextEditingController noOfMatchesControllerThirdChoice =
       TextEditingController();
   int wordLength = 1;
   int noOfMatchesFirstWordFirstGuess = 0;
@@ -79,8 +82,21 @@ class _MyHomePageState extends State<MyHomePage> {
   int noOfMatchesEighthWordSecondGuess = 0;
   int noOfMatchesNinthWordSecondGuess = 0;
   int noOfMatchesTenthWordSecondGuess = 0;
+// generate integers for the third guess
+  int noOfMatchesFirstWordThirdGuess = 0;
+  int noOfMatchesSecondWordThirdGuess = 0;
+  int noOfMatchesThirdWordThirdGuess = 0;
+  int noOfMatchesFourthWordThirdGuess = 0;
+  int noOfMatchesFifthWordThirdGuess = 0;
+  int noOfMatchesSixthWordThirdGuess = 0;
+  int noOfMatchesSeventhWordThirdGuess = 0;
+  int noOfMatchesEighthWordThirdGuess = 0;
+  int noOfMatchesNinthWordThirdGuess = 0;
+  int noOfMatchesTenthWordThirdGuess = 0;
+
 
   bool failedSecondAttempt = false;
+  bool failedThirdAttempt = false;
   bool needNinthWord = false;
   bool needTenthWord = false;
   @override
@@ -89,6 +105,7 @@ class _MyHomePageState extends State<MyHomePage> {
     super.dispose();
     firstChoiceController.dispose();
     secondChoiceController.dispose();
+    thirdChoiceController.dispose();
     firstWordController.dispose();
     secondWordController.dispose();
     thirdWordController.dispose();
@@ -184,6 +201,40 @@ class _MyHomePageState extends State<MyHomePage> {
                     CustomNumberTextfield(
                         unChanged: () {},
                         textController: noOfMatchesControllerSecondChoice,
+                        hintText: 'No of matching letters '),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    const Text('Failed the third guess?'),
+                    // button to add second choice and no of matching letters
+                    TextButton(
+                      onPressed: () {
+                        setState(() {
+                          failedThirdAttempt = !failedThirdAttempt;
+                        });
+                      },
+                      child: failedThirdAttempt == false
+                          ? const Text('Yes')
+                          : const Text('No'),
+                    ),
+                  ],
+                ),
+              ),
+              Visibility(
+                visible: failedThirdAttempt,
+                child: Column(
+                  children: [
+                    CustomTextfield(
+                        textController: thirdChoiceController,
+                        maxLength: wordLength,
+                        hintText: 'Enter the third guess'),
+                    CustomNumberTextfield(
+                        unChanged: () {},
+                        textController: noOfMatchesControllerThirdChoice,
                         hintText: 'No of matching letters '),
                   ],
                 ),
@@ -322,6 +373,28 @@ class _MyHomePageState extends State<MyHomePage> {
               noOfMatchesTenthWordSecondGuess = countMatchingLetters(
                   secondChoiceController.text, tenthWordController.text);
             }
+            if (failedThirdAttempt == true) {
+              noOfMatchesFirstWordThirdGuess = countMatchingLetters(
+                  thirdChoiceController.text, firstWordController.text);
+              noOfMatchesSecondWordThirdGuess = countMatchingLetters(
+                  thirdChoiceController.text, secondWordController.text);
+              noOfMatchesThirdWordThirdGuess = countMatchingLetters(
+                  thirdChoiceController.text, thirdWordController.text);
+              noOfMatchesFourthWordThirdGuess = countMatchingLetters(
+                  thirdChoiceController.text, fourthWordController.text);
+              noOfMatchesFifthWordThirdGuess = countMatchingLetters(
+                  thirdChoiceController.text, fifthWordController.text);
+              noOfMatchesSixthWordThirdGuess = countMatchingLetters(
+                  thirdChoiceController.text, sixthWordController.text);
+              noOfMatchesSeventhWordThirdGuess = countMatchingLetters(
+                  thirdChoiceController.text, seventhWordController.text);
+              noOfMatchesEighthWordThirdGuess = countMatchingLetters(
+                  thirdChoiceController.text, eighthWordController.text);
+              noOfMatchesNinthWordThirdGuess = countMatchingLetters(
+                  thirdChoiceController.text, ninthWordController.text);
+              noOfMatchesTenthWordThirdGuess = countMatchingLetters(
+                  thirdChoiceController.text, tenthWordController.text);
+            }
             showModalBottomSheet(
               context: context,
               isDismissible: false,
@@ -345,6 +418,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               const TableRow(children: [
                                 TableCell(child: Text('First attempt')),
                                 TableCell(child: Text('Second attempt')),
+                                TableCell(child: Text('Third attempt')),
                               ]),
                               TableRow(children: [
                                 TableCell(
@@ -369,6 +443,21 @@ class _MyHomePageState extends State<MyHomePage> {
                                               color: noOfMatchesFirstWordSecondGuess ==
                                                       int.parse(
                                                           noOfMatchesControllerSecondChoice
+                                                              .text)
+                                                  ? Colors.green
+                                                  : Colors.red),
+                                        )
+                                      : const SizedBox(),
+                                ),
+                                TableCell(
+                                  child: failedThirdAttempt == true
+                                      ? Text(
+                                          firstWordController.text,
+                                          style: TextStyle(
+                                              fontSize: 15,
+                                              color: noOfMatchesFirstWordThirdGuess ==
+                                                      int.parse(
+                                                          noOfMatchesControllerThirdChoice
                                                               .text)
                                                   ? Colors.green
                                                   : Colors.red),
@@ -405,6 +494,21 @@ class _MyHomePageState extends State<MyHomePage> {
                                         )
                                       : const SizedBox(),
                                 ),
+                                TableCell(
+                                  child: failedThirdAttempt == true
+                                      ? Text(
+                                          secondWordController.text,
+                                          style: TextStyle(
+                                              fontSize: 15,
+                                              color: noOfMatchesSecondWordThirdGuess ==
+                                                      int.parse(
+                                                          noOfMatchesControllerThirdChoice
+                                                              .text)
+                                                  ? Colors.green
+                                                  : Colors.red),
+                                        )
+                                      : const SizedBox(),
+                                ),
                               ]),
                               TableRow(children: [
                                 TableCell(
@@ -429,6 +533,21 @@ class _MyHomePageState extends State<MyHomePage> {
                                               color: noOfMatchesThirdWordSecondGuess ==
                                                       int.parse(
                                                           noOfMatchesControllerSecondChoice
+                                                              .text)
+                                                  ? Colors.green
+                                                  : Colors.red),
+                                        )
+                                      : const SizedBox(),
+                                ),
+                                TableCell(
+                                  child: failedThirdAttempt == true
+                                      ? Text(
+                                          thirdWordController.text,
+                                          style: TextStyle(
+                                              fontSize: 15,
+                                              color: noOfMatchesThirdWordThirdGuess ==
+                                                      int.parse(
+                                                          noOfMatchesControllerThirdChoice
                                                               .text)
                                                   ? Colors.green
                                                   : Colors.red),
@@ -465,6 +584,21 @@ class _MyHomePageState extends State<MyHomePage> {
                                         )
                                       : const SizedBox(),
                                 ),
+                                TableCell(
+                                  child: failedThirdAttempt == true
+                                      ? Text(
+                                          fourthWordController.text,
+                                          style: TextStyle(
+                                              fontSize: 15,
+                                              color: noOfMatchesFourthWordThirdGuess ==
+                                                      int.parse(
+                                                          noOfMatchesControllerThirdChoice
+                                                              .text)
+                                                  ? Colors.green
+                                                  : Colors.red),
+                                        )
+                                      : const SizedBox(),
+                                ),
                               ]),
                               TableRow(children: [
                                 TableCell(
@@ -489,6 +623,21 @@ class _MyHomePageState extends State<MyHomePage> {
                                               color: noOfMatchesFifthWordSecondGuess ==
                                                       int.parse(
                                                           noOfMatchesControllerSecondChoice
+                                                              .text)
+                                                  ? Colors.green
+                                                  : Colors.red),
+                                        )
+                                      : const SizedBox(),
+                                ),
+                                TableCell(
+                                  child: failedThirdAttempt == true
+                                      ? Text(
+                                          fifthWordController.text,
+                                          style: TextStyle(
+                                              fontSize: 15,
+                                              color: noOfMatchesFifthWordThirdGuess ==
+                                                      int.parse(
+                                                          noOfMatchesControllerThirdChoice
                                                               .text)
                                                   ? Colors.green
                                                   : Colors.red),
@@ -525,6 +674,21 @@ class _MyHomePageState extends State<MyHomePage> {
                                         )
                                       : const SizedBox(),
                                 ),
+                                TableCell(
+                                  child: failedThirdAttempt == true
+                                      ? Text(
+                                          sixthWordController.text,
+                                          style: TextStyle(
+                                              fontSize: 15,
+                                              color: noOfMatchesSixthWordThirdGuess ==
+                                                      int.parse(
+                                                          noOfMatchesControllerThirdChoice
+                                                              .text)
+                                                  ? Colors.green
+                                                  : Colors.red),
+                                        )
+                                      : const SizedBox(),
+                                ),
                               ]),
                               TableRow(children: [
                                 TableCell(
@@ -549,6 +713,21 @@ class _MyHomePageState extends State<MyHomePage> {
                                               color: noOfMatchesSeventhWordSecondGuess ==
                                                       int.parse(
                                                           noOfMatchesControllerSecondChoice
+                                                              .text)
+                                                  ? Colors.green
+                                                  : Colors.red),
+                                        )
+                                      : const SizedBox(),
+                                ),
+                                TableCell(
+                                  child: failedThirdAttempt == true
+                                      ? Text(
+                                          seventhWordController.text,
+                                          style: TextStyle(
+                                              fontSize: 15,
+                                              color: noOfMatchesSeventhWordThirdGuess ==
+                                                      int.parse(
+                                                          noOfMatchesControllerThirdChoice
                                                               .text)
                                                   ? Colors.green
                                                   : Colors.red),
@@ -585,6 +764,21 @@ class _MyHomePageState extends State<MyHomePage> {
                                         )
                                       : const SizedBox(),
                                 ),
+                                TableCell(
+                                  child: failedThirdAttempt == true
+                                      ? Text(
+                                          eighthWordController.text,
+                                          style: TextStyle(
+                                              fontSize: 15,
+                                              color: noOfMatchesEighthWordThirdGuess ==
+                                                      int.parse(
+                                                          noOfMatchesControllerThirdChoice
+                                                              .text)
+                                                  ? Colors.green
+                                                  : Colors.red),
+                                        )
+                                      : const SizedBox(),
+                                ),
                               ]),
                               TableRow(children: [
                                 TableCell(
@@ -615,6 +809,21 @@ class _MyHomePageState extends State<MyHomePage> {
                                         )
                                       : const SizedBox(),
                                 ),
+                                TableCell(
+                                  child: failedThirdAttempt == true
+                                      ? Text(
+                                          ninthWordController.text,
+                                          style: TextStyle(
+                                              fontSize: 15,
+                                              color: noOfMatchesNinthWordThirdGuess ==
+                                                      int.parse(
+                                                          noOfMatchesControllerThirdChoice
+                                                              .text)
+                                                  ? Colors.green
+                                                  : Colors.red),
+                                        )
+                                      : const SizedBox(),
+                                ),
                               ]),
                               TableRow(children: [
                                 TableCell(
@@ -639,6 +848,21 @@ class _MyHomePageState extends State<MyHomePage> {
                                               color: noOfMatchesTenthWordSecondGuess ==
                                                       int.parse(
                                                           noOfMatchesControllerSecondChoice
+                                                              .text)
+                                                  ? Colors.green
+                                                  : Colors.red),
+                                        )
+                                      : const SizedBox(),
+                                ),
+                                TableCell(
+                                  child: failedThirdAttempt == true
+                                      ? Text(
+                                          tenthWordController.text,
+                                          style: TextStyle(
+                                              fontSize: 15,
+                                              color: noOfMatchesTenthWordThirdGuess ==
+                                                      int.parse(
+                                                          noOfMatchesControllerThirdChoice
                                                               .text)
                                                   ? Colors.green
                                                   : Colors.red),
