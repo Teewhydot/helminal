@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "722652385293",
+    "project_id": "helminal",
+    "storage_bucket": "helminal.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:722652385293:android:698a19a1fa9a6037604544",
+        "android_client_info": {
+          "package_name": "com.example.helminal"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAsEtrdxfTYHr3n-k6usclUAxhCqrWqXNM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

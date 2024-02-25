@@ -1,8 +1,15 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:helminal/engine/prediction_engine.dart';
+import 'package:helminal/firebase_options.dart';
+import 'package:helminal/login.dart';
 import 'package:helminal/widgets/textfield_widget.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MyApp());
 }
 
@@ -19,7 +26,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(),
+      home: const LoginPage(),
     );
   }
 }
@@ -263,8 +270,7 @@ class _MyHomePageState extends State<MyHomePage> {
               thirdWordController.text.isEmpty ||
               fourthWordController.text.isEmpty ||
               fifthWordController.text.isEmpty ||
-              sixthWordController.text.isEmpty
-            ) {
+              sixthWordController.text.isEmpty) {
             // show a snack bar saying all fields are required
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
