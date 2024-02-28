@@ -40,11 +40,7 @@ dependencies:
   firebase_core: ^2.24.2
   firebase: ^9.0.3
   firebase_auth: ^4.16.0
-  modal_progress_hud_nsn: ^0.2.1
-  loading_indicator: ^3.1.0
-  http: ^0.13.5
   page_transition: "^2.0.9"
-  internet_connection_checker: ^1.0.0+1
 
 
 
