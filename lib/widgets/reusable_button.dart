@@ -5,10 +5,11 @@ import 'package:helminal/constants.dart';
 
 class ReusableButton extends StatelessWidget {
   final Widget buttonText;
-  final onpressed;
+  final onPressed;
+  final onLongPress;
   final buttonColor;
 
-  const ReusableButton(this.buttonText, this.onpressed, this.buttonColor,
+  const ReusableButton(this.buttonText, this.onPressed, this.buttonColor, this.onLongPress,
       {super.key});
 
   @override
@@ -29,7 +30,8 @@ class ReusableButton extends StatelessWidget {
                             borderRadius: BorderRadius.circular(10.0),
                             side:
                             const BorderSide(color: Colors.transparent)))),
-                onPressed: onpressed,
+                onPressed: onPressed,
+                onLongPress: onLongPress,
                 child: buttonText,
               ),
             ),

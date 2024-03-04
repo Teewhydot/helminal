@@ -2,17 +2,28 @@ import 'package:flutter/material.dart';
 import 'package:helminal/validators.dart';
 
 
-class CustomTextfield extends StatelessWidget {
+class CustomTextfield extends StatefulWidget {
   const CustomTextfield({
     super.key,
     required TextEditingController textController,
     required this.hintText,
     required this.maxLength,
+    required this.focusNode,
+    required this.wordKey,
+
   }) : _textController = textController;
 
   final TextEditingController _textController;
   final String hintText;
   final int maxLength;
+  final FocusNode focusNode;
+  final GlobalKey wordKey;
+
+  @override
+  State<CustomTextfield> createState() => _CustomTextfieldState();
+}
+
+class _CustomTextfieldState extends State<CustomTextfield> {
 
   @override
   Widget build(BuildContext context) {
@@ -25,10 +36,17 @@ class CustomTextfield extends StatelessWidget {
         const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(20))),
         child: TextFormField(
           autovalidateMode: AutovalidateMode.onUserInteraction,
-          controller: _textController,
+          controller: widget._textController,
           validator: lengthValidator,
-          maxLength: maxLength,
+          focusNode: widget.focusNode,
+          key: widget.wordKey,
+          maxLength: widget.maxLength,
           keyboardType: TextInputType.name,
+          onChanged: (value) {
+            if (value.length == widget.maxLength) {
+              FocusScope.of(context).requestFocus(FocusNode());
+            }
+          },
           decoration: InputDecoration(
             focusedBorder: OutlineInputBorder(
               borderSide: const BorderSide(
@@ -41,7 +59,7 @@ class CustomTextfield extends StatelessWidget {
                   style: BorderStyle.solid,),
               borderRadius: BorderRadius.circular(8),
             ),
-            hintText: hintText,
+            hintText: widget.hintText,
             contentPadding:
             const EdgeInsets.symmetric(vertical: 5.0, horizontal: 20.0),
           ),
